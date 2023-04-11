@@ -8,7 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { Posts } from "../entity/post.entity";
+import { Posts } from "../entities/post.entity";
 
 
 
