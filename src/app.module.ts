@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostsModule } from './posts/posts.module';
 import { TodoModule } from './todo/todo.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
 
 
 @Module({
@@ -23,7 +26,14 @@ import { TodoModule } from './todo/todo.module';
       }
     }),
     PostsModule,
-    TodoModule
+    TodoModule,
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      sortSchema: true,
+      // debug: false,
+      // playground: false,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
