@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostsModule } from './posts/posts.module';
+import { TodoModule } from './todo/todo.module';
 
 
 @Module({
@@ -21,7 +22,8 @@ import { PostsModule } from './posts/posts.module';
         migrationsDir: 'src/migration'
       }
     }),
-    PostsModule
+    PostsModule,
+    TodoModule
   ],
   controllers: [AppController],
   providers: [AppService],
