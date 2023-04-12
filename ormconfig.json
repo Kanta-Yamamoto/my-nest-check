@@ -8,7 +8,7 @@
     "database": "develop",
     "synchronize": true,
     "entities": ["dist/entities/*.entity.{ts,js}"],
-    "migrations": ["src/migration/*.ts"],
+    "migrations": ["src/migrations/*{.ts,.js}"],
     "cli": {
       "migrationsDir": "src/migration/"
     }
