@@ -2,27 +2,42 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateTodoInput {
+  deadline: DateTime
+  detail: String
+  status: Int = 0
+  title: String!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
+type Mutation {
+  createTodo(todo: CreateTodoInput!): Todo!
+  deleteTodo(id: Int!): Todo!
+  updateTodo(id: Int!, todo: UpdateTodoInput!): Todo!
+}
+
 type Query {
   findAll: [Todo]!
-  findOneById(id: ID!): Todo!
+  findOneById(id: Int!): Todo!
 }
 
 type Todo {
-  createdAt: DateTime!
-  description: String
-  id: ID!
-  status: TodoStatus!
+  created_at: DateTime!
+  deadline: DateTime
+  detail: String
+  status: Int!
   title: String!
-  updatedAt: DateTime!
+  todo_id: Int!
+  updated_at: DateTime!
 }
 
-enum TodoStatus {
-  COMPLETE
-  IN_PROGRESS
-  NEW
+input UpdateTodoInput {
+  deadline: DateTime
+  detail: String
+  status: Int
+  title: String
 }

@@ -1,27 +1,44 @@
-// src/todo/todo.resolver.ts
-import { Args, ID, Query, Resolver } from '@nestjs/graphql';
-import { Todo } from './models/todo.models';
-import { TodoService } from './todo.service';
-
-// Resolverデコレータでresolverを定義
-// https://docs.nestjs.com/graphql/resolvers#code-first-resolver
-@Resolver()
-export class TodoResolver {
-  constructor(private todoService: TodoService) {}
-  // QueryデコレータでQueryを定義
-  // 第一引数にReturnTypeFuncを指定し、型を定義。ここではTodoの配列を指定。
-  // 第二引数にオプションとして{ nullable: 'items' }を与えることでから配列を許容する。[Todo]!と同義。
-  // デフォルトでは [Todo!]! になる。
-  @Query(() => [Todo], { nullable: 'items' })
-  findAll() {
-    return this.todoService.findAll();
+import {
+    Args,
+    ID,
+    Query,
+    Resolver,
+    Mutation,
+    Int,
+    Parent,
+    ResolveField,
+  } from '@nestjs/graphql';
+  import { Todo } from '../entities/todo.entity';
+  import { TodoService } from './todo.service';
+  import { CreateTodoInput, UpdateTodoInput } from '../graphql/todo.input';
+  
+  @Resolver(() => Todo)
+  export class TodoResolver {
+    constructor(private todoService: TodoService) {}
+  
+    @Query(() => [Todo], { nullable: 'items' })
+    findAll() {
+      return this.todoService.findAll();
+    }
+  
+    @Query(() => Todo)
+    findOneById(@Args('id', { type: () => Int }) id: number) {
+      return this.todoService.findOneById(id);
+    }
+  
+    @Mutation(() => Todo)
+    createTodo(@Args('todo') todo: CreateTodoInput) {
+      return this.todoService.create(todo);
+    }
+  
+    @Mutation(() => Todo)
+    updateTodo(@Args('id', { type: () => Int }) id: number, @Args('todo') todo: UpdateTodoInput) {
+      return this.todoService.update(id, todo);
+    }
+  
+    @Mutation(() => Todo)
+    deleteTodo(@Args('id', { type: () => Int }) id: number) {
+      return this.todoService.delete(id);
+    }
   }
-
-  @Query(() => Todo)
-  // Queryに引数がある場合はArgsデコレータで定義。
-  // 第一引数に引数の名前、第二引数に型を指定。
-  // schema上の型定義は findOneById(id: ID!): Todo! となる
-  findOneById(@Args('id', { type: () => ID }) id: string) {
-    return this.todoService.findOneById(id);
-  }
-}
+  

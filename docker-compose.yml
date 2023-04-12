@@ -10,6 +10,8 @@ services:
       - type: bind
         source: .
         target: /api
+    depends_on:
+      - mysql
   mysql:
     image: mysql/mysql-server:5.7
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci

@@ -1,58 +1,40 @@
 // import { Injectable } from '@nestjs/common';
-// import { InjectRepository } from '@nestjs/typeorm';
-// import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 // import { Todo } from '../entities/todo.entity';
-
-// @Injectable()
-// export class TodoService {
-//   constructor(
-//     @InjectRepository(Todo)
-//     private readonly todoRepository: Repository<Todo>,
-//   ) {}
-
-//   async findAll(): Promise<Todo[]> {
-//     return this.todoRepository.find();
-//   }
-
-//   async findOne(id: number): Promise<Todo> {
-//     return this.todoRepository.findOne(id);
-//   }
-
-//   async create(todo: Todo): Promise<Todo> {
-//     return this.todoRepository.save(todo);
-//   }
-
-//   async update(id: number, todo: Todo): Promise<Todo> {
-//     await this.todoRepository.update(id, todo);
-//     return this.todoRepository.findOne(id);
-//   }
-
-//   async delete(id: number): Promise<void> {
-//     await this.todoRepository.delete(id);
-//   }
-// }
-
-// src/todo/todo.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Todo } from './models/todo.models';
+import { Todo } from '../entities/todo.entity';
 
 @Injectable()
 export class TodoService {
-  // 今回はDBと接続しないのでメモリ上にTodoを保存します。
-  private todos: Todo[] = [];
+  constructor(
+    @InjectRepository(Todo)
+    private todoRepository: Repository<Todo>,
+  ) {}
 
-  // 全件取得のメソッド
-  findAll(): Todo[] {
-    return this.todos;
+  async findAll(): Promise<Todo[]> {
+    return await this.todoRepository.find();
   }
-  // idを元に一件取得のメソッド
-  findOneById(id: string): Todo {
-    const result = this.todos.find((todo) => id === todo.id);
+
+  async findOneById(id: number): Promise<Todo> {
+    const result = await this.todoRepository.findOne(id);
     if (!result) {
-      // なかったら404エラーを返す。ビルトインのエラーも豊富にあってエラー処理も結構楽
-      // https://docs.nestjs.com/exception-filters#built-in-http-exceptions
       throw new NotFoundException();
     }
     return result;
+  }
+
+  async create(todo: Partial<Todo>): Promise<Todo> {
+    const newTodo = this.todoRepository.create(todo);
+    return await this.todoRepository.save(newTodo);
+  }
+
+  async update(id: number, todo: Partial<Todo>): Promise<Todo> {
+    await this.todoRepository.update(id, todo);
+    return await this.findOneById(id);
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.todoRepository.delete(id);
   }
 }

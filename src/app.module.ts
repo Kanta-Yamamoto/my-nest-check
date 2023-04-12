@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PostsModule } from './posts/posts.module';
 import { TodoModule } from './todo/todo.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -13,7 +12,7 @@ import { join } from 'path';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: process.env.TYPEORM_HOST || 'mysql',
+      host: 'mysql',
       port: Number(process.env.TYPEORM_PORT) || 3306,
       username: process.env.TYPEORM_USERNAME || 'user',
       password: process.env.TYPEORM_PASSWORD || 'password',
@@ -25,7 +24,6 @@ import { join } from 'path';
         migrationsDir: 'src/migration'
       }
     }),
-    PostsModule,
     TodoModule,
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
